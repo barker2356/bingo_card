@@ -1,273 +1,321 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Share2, Edit3, CheckCircle2, RotateCcw, Lock, Unlock, Copy, ExternalLink, Trophy, Anchor } from 'lucide-react';
-
-// --- Utility Functions for URL State Management ---
-
-// Simple compression to keep URLs shorter
-const encodeState = (data) => {
-  try {
-    const jsonStr = JSON.stringify(data);
-    return btoa(encodeURIComponent(jsonStr)); // Base64 encode safe for URLs
-  } catch (e) {
-    console.error("Encoding failed", e);
-    return "";
-  }
-};
-
-const decodeState = (str) => {
-  try {
-    const jsonStr = decodeURIComponent(atob(str));
-    return JSON.parse(jsonStr);
-  } catch (e) {
-    console.error("Decoding failed", e);
-    return null;
-  }
-};
-
-export default function LobsterBingo() {
-  // Default state
-  const DEFAULT_TITLE = "The Lobster Pot Bingo";
-  const GRID_SIZE = 25; // 5x5
-  const initialGrid = Array(GRID_SIZE).fill({ text: "", completed: false });
-
-  const [title, setTitle] = useState(DEFAULT_TITLE);
-  const [grid, setGrid] = useState(initialGrid);
-  const [mode, setMode] = useState('edit'); // 'edit' or 'play'
-  const [notification, setNotification] = useState(null);
-  
-  // Load state from URL on initial mount
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const boardData = params.get('board');
-    if (boardData) {
-      const decoded = decodeState(boardData);
-      if (decoded) {
-        setTitle(decoded.title || DEFAULT_TITLE);
-        setGrid(decoded.grid || initialGrid);
-        setMode('play'); // Default to play mode if loading a shared link
-      }
-    }
-  }, []);
-
-  // Update URL when state changes (optional, but good for "live" feel if they refresh)
-  // We won't force a reload, but we will prepare the shareable link based on current state.
-
-  const handleTileClick = (index) => {
-    if (mode === 'play') {
-      const newGrid = [...grid];
-      newGrid[index] = { ...newGrid[index], completed: !newGrid[index].completed };
-      setGrid(newGrid);
-    }
-  };
-
-  const handleTileChange = (index, value) => {
-    if (mode === 'edit') {
-      const newGrid = [...grid];
-      newGrid[index] = { ...newGrid[index], text: value };
-      setGrid(newGrid);
-    }
-  };
-
-  const generateShareLink = () => {
-    const stateToShare = { title, grid };
-    const encoded = encodeState(stateToShare);
-    const url = `${window.location.origin}${window.location.pathname}?board=${encoded}`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lobster Pot Bingo</title>
     
-    // Copy to clipboard
-    const textArea = document.createElement("textarea");
-    textArea.value = url;
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-        document.execCommand('copy');
-        showNotification("Link copied to clipboard!");
-    } catch (err) {
-        showNotification("Failed to copy link.");
-    }
-    document.body.removeChild(textArea);
-  };
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Load Babel for JSX support -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  const showNotification = (msg) => {
-    setNotification(msg);
-    setTimeout(() => setNotification(null), 3000);
-  };
+    <!-- Google Fonts for that OSRS/Clan feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  const resetBoard = () => {
-    if (window.confirm("Are you sure you want to clear the board?")) {
-      setGrid(initialGrid);
-      setTitle(DEFAULT_TITLE);
-      setMode('edit');
-    }
-  };
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Merriweather', serif; }
+        /* Animation Utilities */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .animate-pop { animation: fadeIn 0.2s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-white">
+    <div id="root"></div>
 
-  // --- Styles ---
-  // Matches the "Lobster Pot" theme: Dark Navy, Muted Orange, Clean Serif/Sans mix.
-  const theme = {
-    bg: "bg-[#0f172a]", // Slate 900
-    nav: "bg-[#0B1120]", // Darker navy
-    primary: "bg-[#E05A36]", // Terracotta Orange from image
-    primaryHover: "hover:bg-[#c94e2e]",
-    secondary: "bg-[#1e293b]", // Slate 800
-    accent: "text-[#E05A36]",
-    textMain: "text-white",
-    textMuted: "text-slate-400",
-    fontSerif: "font-serif", // Using standard serif to match "The Lobster Pot" title
-    fontSans: "font-sans",
-  };
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  return (
-    <div className={`min-h-screen ${theme.bg} ${theme.textMain} ${theme.fontSans} flex flex-col relative overflow-x-hidden`}>
-      
-      {/* Background decoration - Abstract Pixel/Blurry feel */}
-      <div className="absolute inset-0 pointer-events-none opacity-20" 
-           style={{
-             backgroundImage: `radial-gradient(circle at 50% 50%, #1e293b 1px, transparent 1px)`,
-             backgroundSize: '20px 20px'
-           }}>
-      </div>
-      
-      {/* Navbar */}
-      <nav className={`${theme.nav} p-4 shadow-lg border-b border-slate-800 z-10`}>
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-             <div className="p-2 bg-[#E05A36] rounded-md">
-                <Anchor className="text-white w-6 h-6" />
-             </div>
-             <div>
-                <h1 className={`${theme.fontSerif} text-xl md:text-2xl font-bold tracking-wide`}>The Lobster Pot</h1>
-                <p className={`text-xs ${theme.textMuted} tracking-wider uppercase`}>Professionally Casual</p>
-             </div>
-          </div>
-          <div className="flex gap-2">
-             <button 
-               onClick={generateShareLink}
-               className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-md border border-[#E05A36] text-[#E05A36] hover:bg-[#E05A36] hover:text-white transition-all text-sm font-semibold`}
-             >
-               <Share2 size={16} /> Share
-             </button>
-          </div>
-        </div>
-      </nav>
+        // --- Icon Components (Inlined for standalone HTML) ---
+        const Anchor = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="5" r="3"/><line x1="12" x2="12" y1="22" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>
+        );
+        const Share2 = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+        );
+        const Edit3 = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        );
+        const Trophy = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17"/><path d="M14 14.66V17"/><path d="M18 22H6l-1-11h14l-1 11Z"/><path d="M8.5 2h7"/><path d="M12 2v2"/></svg>
+        );
+        const CheckCircle2 = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        );
+        const RotateCcw = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        );
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center p-4 z-10">
-        
-        {/* Controls Header */}
-        <div className="w-full max-w-4xl mt-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-6 rounded-xl border border-slate-700 backdrop-blur-sm">
-          <div className="flex-1 w-full">
-            {mode === 'edit' ? (
-              <div className="flex flex-col gap-1">
-                 <label className="text-xs text-slate-400 uppercase tracking-widest font-bold">Event Title</label>
-                 <input 
-                  type="text" 
-                  value={title} 
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="bg-transparent border-b-2 border-slate-600 text-2xl md:text-3xl font-bold text-white focus:outline-none focus:border-[#E05A36] w-full font-serif placeholder-slate-600"
-                  placeholder="Enter Event Name..."
-                />
-              </div>
-            ) : (
-               <div>
-                  <h2 className="text-2xl md:text-3xl font-bold font-serif text-[#E05A36]">{title}</h2>
-                  <p className="text-slate-400 text-sm mt-1">Interactive Bingo Board</p>
-               </div>
-            )}
-          </div>
+        // --- Utility Functions for URL State Management ---
+        const encodeState = (data) => {
+            try {
+                const jsonStr = JSON.stringify(data);
+                return btoa(encodeURIComponent(jsonStr)); 
+            } catch (e) {
+                console.error("Encoding failed", e);
+                return "";
+            }
+        };
 
-          <div className="flex items-center gap-3 bg-slate-900 p-2 rounded-lg border border-slate-700">
-             <button 
-               onClick={() => setMode('edit')}
-               className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'edit' ? `${theme.primary} text-white shadow-lg` : 'text-slate-400 hover:text-white'}`}
-             >
-               <Edit3 size={16} /> Edit
-             </button>
-             <button 
-               onClick={() => setMode('play')}
-               className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'play' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-             >
-               <Trophy size={16} /> Play
-             </button>
-          </div>
-        </div>
+        const decodeState = (str) => {
+            try {
+                const jsonStr = decodeURIComponent(atob(str));
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.error("Decoding failed", e);
+                return null;
+            }
+        };
 
-        {/* The Grid */}
-        <div className="w-full max-w-4xl grid grid-cols-5 gap-2 md:gap-3 p-3 bg-slate-800 rounded-xl shadow-2xl border-4 border-slate-700">
-          {grid.map((tile, index) => (
-            <div 
-              key={index} 
-              onClick={() => handleTileClick(index)}
-              className={`
-                aspect-square relative flex flex-col items-center justify-center text-center p-1 md:p-2 rounded-md transition-all duration-200
-                ${mode === 'play' ? 'cursor-pointer hover:scale-[1.02] active:scale-95 select-none' : ''}
-                ${mode === 'play' && tile.completed 
-                  ? 'bg-emerald-900/80 border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
-                  : 'bg-slate-900 border border-slate-700 hover:border-slate-500'}
-              `}
-            >
-              {/* Center Tile Decoration (Free space usually, but here just part of grid) */}
-              {index === 12 && !tile.text && mode === 'edit' && (
-                 <div className="absolute opacity-20 pointer-events-none">
-                    <Anchor size={40} />
-                 </div>
-              )}
+        // --- Main Component ---
+        function LobsterBingo() {
+            const DEFAULT_TITLE = "The Lobster Pot Bingo";
+            const GRID_SIZE = 25; 
+            const initialGrid = Array(GRID_SIZE).fill({ text: "", completed: false });
 
-              {/* Complete Overlay Icon */}
-              {mode === 'play' && tile.completed && (
-                <div className="absolute top-1 right-1 text-emerald-400 animate-in fade-in zoom-in duration-200">
-                  <CheckCircle2 size={16} md:size={20} className="fill-emerald-900/50" />
+            const [title, setTitle] = useState(DEFAULT_TITLE);
+            const [grid, setGrid] = useState(initialGrid);
+            const [mode, setMode] = useState('edit'); // 'edit' or 'play'
+            const [notification, setNotification] = useState(null);
+            
+            // Load state from URL on initial mount
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                const boardData = params.get('board');
+                if (boardData) {
+                    const decoded = decodeState(boardData);
+                    if (decoded) {
+                        setTitle(decoded.title || DEFAULT_TITLE);
+                        setGrid(decoded.grid || initialGrid);
+                        setMode('play'); 
+                    }
+                }
+            }, []);
+
+            const handleTileClick = (index) => {
+                if (mode === 'play') {
+                    const newGrid = [...grid];
+                    newGrid[index] = { ...newGrid[index], completed: !newGrid[index].completed };
+                    setGrid(newGrid);
+                }
+            };
+
+            const handleTileChange = (index, value) => {
+                if (mode === 'edit') {
+                    const newGrid = [...grid];
+                    newGrid[index] = { ...newGrid[index], text: value };
+                    setGrid(newGrid);
+                }
+            };
+
+            const generateShareLink = () => {
+                const stateToShare = { title, grid };
+                const encoded = encodeState(stateToShare);
+                // Ensure we use the correct base URL
+                const url = `${window.location.protocol}//${window.location.host}${window.location.pathname}?board=${encoded}`;
+                
+                // Copy to clipboard fallback method
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showNotification("Link copied to clipboard!");
+                } catch (err) {
+                    showNotification("Failed to copy link.");
+                }
+                document.body.removeChild(textArea);
+            };
+
+            const showNotification = (msg) => {
+                setNotification(msg);
+                setTimeout(() => setNotification(null), 3000);
+            };
+
+            const resetBoard = () => {
+                if (window.confirm("Are you sure you want to clear the board?")) {
+                    setGrid(initialGrid);
+                    setTitle(DEFAULT_TITLE);
+                    setMode('edit');
+                    // Clean URL
+                    window.history.pushState({}, document.title, window.location.pathname);
+                }
+            };
+
+            // Theme colors matching image
+            const theme = {
+                bg: "bg-[#0f172a]", 
+                nav: "bg-[#0B1120]", 
+                primary: "bg-[#E05A36]", 
+                textMuted: "text-slate-400",
+            };
+
+            return (
+                <div className={`min-h-screen ${theme.bg} flex flex-col relative overflow-x-hidden`}>
+                    
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 pointer-events-none opacity-20" 
+                        style={{
+                            backgroundImage: `radial-gradient(circle at 50% 50%, #1e293b 1px, transparent 1px)`,
+                            backgroundSize: '20px 20px'
+                        }}>
+                    </div>
+                    
+                    {/* Navbar */}
+                    <nav className={`${theme.nav} p-4 shadow-lg border-b border-slate-800 z-10`}>
+                        <div className="max-w-6xl mx-auto flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-[#E05A36] rounded-md shadow-lg">
+                                    <Anchor className="text-white w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h1 className="font-serif text-xl md:text-2xl font-bold tracking-wide text-white">The Lobster Pot</h1>
+                                    <p className={`text-xs ${theme.textMuted} tracking-wider uppercase`}>Professionally Casual</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button 
+                                onClick={generateShareLink}
+                                className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-md border border-[#E05A36] text-[#E05A36] hover:bg-[#E05A36] hover:text-white transition-all text-sm font-semibold`}
+                                >
+                                <Share2 size={16} /> Share
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Main Content */}
+                    <main className="flex-grow flex flex-col items-center p-4 z-10 w-full">
+                        
+                        {/* Controls Header */}
+                        <div className="w-full max-w-4xl mt-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-6 rounded-xl border border-slate-700 backdrop-blur-sm shadow-xl">
+                            <div className="flex-1 w-full text-center md:text-left">
+                                {mode === 'edit' ? (
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-xs text-slate-400 uppercase tracking-widest font-bold">Event Title</label>
+                                    <input 
+                                    type="text" 
+                                    value={title} 
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="bg-transparent border-b-2 border-slate-600 text-2xl md:text-3xl font-bold text-white focus:outline-none focus:border-[#E05A36] w-full font-serif placeholder-slate-600 text-center md:text-left"
+                                    placeholder="Enter Event Name..."
+                                    />
+                                </div>
+                                ) : (
+                                <div>
+                                    <h2 className="text-2xl md:text-3xl font-bold font-serif text-[#E05A36]">{title}</h2>
+                                    <p className="text-slate-400 text-sm mt-1">Interactive Bingo Board</p>
+                                </div>
+                                )}
+                            </div>
+
+                            <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-lg border border-slate-700">
+                                <button 
+                                onClick={() => setMode('edit')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'edit' ? `${theme.primary} text-white shadow-lg` : 'text-slate-400 hover:text-white'}`}
+                                >
+                                <Edit3 size={16} /> Edit
+                                </button>
+                                <button 
+                                onClick={() => setMode('play')}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'play' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                >
+                                <Trophy size={16} /> Play
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* The Grid */}
+                        <div className="w-full max-w-4xl grid grid-cols-5 gap-2 md:gap-3 p-3 bg-slate-800 rounded-xl shadow-2xl border-4 border-slate-700">
+                            {grid.map((tile, index) => (
+                                <div 
+                                key={index} 
+                                onClick={() => handleTileClick(index)}
+                                className={`
+                                    aspect-square relative flex flex-col items-center justify-center text-center p-1 md:p-2 rounded-md transition-all duration-200
+                                    ${mode === 'play' ? 'cursor-pointer hover:scale-[1.02] active:scale-95 select-none' : ''}
+                                    ${mode === 'play' && tile.completed 
+                                    ? 'bg-emerald-900/80 border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                                    : 'bg-slate-900 border border-slate-700 hover:border-slate-500'}
+                                `}
+                                >
+                                {/* Center Icon for empty middle tile */}
+                                {index === 12 && !tile.text && mode === 'edit' && (
+                                    <div className="absolute opacity-20 pointer-events-none text-white">
+                                        <Anchor size={40} />
+                                    </div>
+                                )}
+
+                                {/* Complete Overlay Icon */}
+                                {mode === 'play' && tile.completed && (
+                                    <div className="absolute top-1 right-1 text-emerald-400 animate-pop">
+                                        <CheckCircle2 size={16} className="fill-emerald-900/50" />
+                                    </div>
+                                )}
+
+                                {mode === 'edit' ? (
+                                    <textarea
+                                    value={tile.text}
+                                    onChange={(e) => handleTileChange(index, e.target.value)}
+                                    placeholder={index === 12 ? "Free Space?" : "Task..."}
+                                    className="w-full h-full bg-transparent text-center text-[10px] md:text-sm text-white resize-none focus:outline-none placeholder-slate-600 font-sans"
+                                    style={{ overflow: 'hidden' }}
+                                    />
+                                ) : (
+                                    <span className={`text-[10px] md:text-sm font-medium break-words w-full px-1 overflow-hidden ${tile.completed ? 'text-emerald-100 line-through decoration-emerald-500/50 decoration-2' : 'text-slate-200'}`}>
+                                    {tile.text || <span className="text-slate-700 italic text-[10px]">Empty</span>}
+                                    </span>
+                                )}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Footer Controls */}
+                        <div className="mt-8 flex gap-4">
+                            <button 
+                                onClick={resetBoard}
+                                className="text-slate-500 hover:text-red-400 flex items-center gap-2 text-sm font-medium transition-colors"
+                            >
+                                <RotateCcw size={16} /> Reset Board
+                            </button>
+                            
+                            <button 
+                                onClick={generateShareLink}
+                                className="md:hidden flex items-center gap-2 px-6 py-3 rounded-full bg-[#E05A36] text-white shadow-lg font-bold"
+                            >
+                                <Share2 size={18} /> Share Board
+                            </button>
+                        </div>
+
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="w-full p-6 text-center text-slate-500 text-xs border-t border-slate-800 bg-[#0B1120] mt-auto">
+                        <p className="mb-2">The Lobster Pot Clan &copy; {new Date().getFullYear()}</p>
+                        <p className="italic opacity-50">"Professionally Casual."</p>
+                    </footer>
+
+                    {/* Notification Toast */}
+                    {notification && (
+                        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#E05A36] text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-2 animate-pop z-50">
+                            <CheckCircle2 size={18} />
+                            <span className="font-semibold text-sm">{notification}</span>
+                        </div>
+                    )}
+
                 </div>
-              )}
+            );
+        }
 
-              {mode === 'edit' ? (
-                <textarea
-                  value={tile.text}
-                  onChange={(e) => handleTileChange(index, e.target.value)}
-                  placeholder={index === 12 ? "Free Space?" : "Task..."}
-                  className="w-full h-full bg-transparent text-center text-xs md:text-sm text-white resize-none focus:outline-none placeholder-slate-600"
-                  style={{ overflow: 'hidden' }}
-                />
-              ) : (
-                <span className={`text-xs md:text-sm font-medium break-words w-full px-1 ${tile.completed ? 'text-emerald-100 line-through decoration-emerald-500/50 decoration-2' : 'text-slate-200'}`}>
-                  {tile.text || <span className="text-slate-700 italic text-[10px]">Empty Tile</span>}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Footer Controls */}
-        <div className="mt-8 flex gap-4">
-           <button 
-             onClick={resetBoard}
-             className="text-slate-500 hover:text-red-400 flex items-center gap-2 text-sm font-medium transition-colors"
-           >
-             <RotateCcw size={16} /> Reset Board
-           </button>
-           
-           <button 
-             onClick={generateShareLink}
-             className="md:hidden flex items-center gap-2 px-6 py-3 rounded-full bg-[#E05A36] text-white shadow-lg font-bold"
-           >
-             <Share2 size={18} /> Share Board
-           </button>
-        </div>
-
-      </main>
-
-      {/* OSRS / Clan Footer */}
-      <footer className="w-full p-6 text-center text-slate-500 text-xs border-t border-slate-800 bg-[#0B1120]">
-        <p className="mb-2">The Lobster Pot Clan &copy; {new Date().getFullYear()}</p>
-        <p className="italic opacity-50">"Professionally Casual."</p>
-      </footer>
-
-      {/* Notification Toast */}
-      {notification && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#E05A36] text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 fade-in duration-300 z-50">
-           <CheckCircle2 size={18} />
-           <span className="font-semibold text-sm">{notification}</span>
-        </div>
-      )}
-
-    </div>
-  );
-}
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<LobsterBingo />);
+    </script>
+</body>
+</html>
