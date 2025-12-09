@@ -1,303 +1,273 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #36c0a0; -webkit-text-stroke: #36c0a0}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca; min-height: 16.0px}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #6d7378; -webkit-text-stroke: #6d7378}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #b76ff7; -webkit-text-stroke: #b76ff7}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #d4d4d4; -webkit-text-stroke: #d4d4d4}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #71c083; -webkit-text-stroke: #71c083}
-    span.s1 {font-kerning: none; color: #b76ff7; background-color: #171818; -webkit-text-stroke: 0px #b76ff7}
-    span.s2 {font-kerning: none; background-color: #171818}
-    span.s3 {font-kerning: none; color: #36c0a0; background-color: #171818; -webkit-text-stroke: 0px #36c0a0}
-    span.s4 {font-kerning: none; color: #d4d4d4; background-color: #171818; -webkit-text-stroke: 0px #d4d4d4}
-    span.s5 {font-kerning: none; color: #71c083; background-color: #171818; -webkit-text-stroke: 0px #71c083}
-    span.s6 {font-kerning: none; color: #cacaca; background-color: #171818; -webkit-text-stroke: 0px #cacaca}
-    span.s7 {font-kerning: none}
-    span.s8 {font-kerning: none; color: #6d7378; background-color: #171818; -webkit-text-stroke: 0px #6d7378}
-    span.s9 {font-kerning: none; color: #f67c30; background-color: #171818; -webkit-text-stroke: 0px #f67c30}
-  </style>
-</head>
-<body>
-<p class="p1"><span class="s1">import</span><span class="s2"> </span><span class="s3">React</span><span class="s4">,</span><span class="s2"> </span><span class="s4">{</span><span class="s2"> useState</span><span class="s4">,</span><span class="s2"> useEffect</span><span class="s4">,</span><span class="s2"> useRef </span><span class="s4">}</span><span class="s2"> </span><span class="s1">from</span><span class="s2"> </span><span class="s5">'react'</span><span class="s4">;</span></p>
-<p class="p2"><span class="s1">import</span><span class="s6"> </span><span class="s4">{</span><span class="s6"> </span><span class="s2">Share2</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Edit3</span><span class="s4">,</span><span class="s6"> </span><span class="s2">CheckCircle2</span><span class="s4">,</span><span class="s6"> </span><span class="s2">RotateCcw</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Lock</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Unlock</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Copy</span><span class="s4">,</span><span class="s6"> </span><span class="s2">ExternalLink</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Trophy</span><span class="s4">,</span><span class="s6"> </span><span class="s2">Anchor</span><span class="s6"> </span><span class="s4">}</span><span class="s6"> </span><span class="s1">from</span><span class="s6"> </span><span class="s5">'lucide-react'</span><span class="s4">;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s2">// --- Utility Functions for URL State Management ---</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s2">// Simple compression to keep URLs shorter</span></p>
-<p class="p1"><span class="s1">const</span><span class="s2"> encodeState </span><span class="s4">=</span><span class="s2"> </span><span class="s4">(</span><span class="s2">data</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">try</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> jsonStr </span><span class="s4">=</span><span class="s2"> </span><span class="s3">JSON</span><span class="s4">.</span><span class="s2">stringify</span><span class="s4">(</span><span class="s2">data</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">return</span><span class="s2"> btoa</span><span class="s4">(</span><span class="s2">encodeURIComponent</span><span class="s4">(</span><span class="s2">jsonStr</span><span class="s4">));</span><span class="s2"> </span><span class="s8">// Base64 encode safe for URLs</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">}</span><span class="s2"> </span><span class="s1">catch</span><span class="s2"> </span><span class="s4">(</span><span class="s2">e</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>console</span><span class="s4">.</span><span class="s2">error</span><span class="s4">(</span><span class="s5">"Encoding failed"</span><span class="s4">,</span><span class="s2"> e</span><span class="s4">);</span></p>
-<p class="p5"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s2">return</span><span class="s6"> </span><span class="s5">""</span><span class="s4">;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">}</span></p>
-<p class="p6"><span class="s2">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s1">const</span><span class="s2"> decodeState </span><span class="s4">=</span><span class="s2"> </span><span class="s4">(</span><span class="s2">str</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">try</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> jsonStr </span><span class="s4">=</span><span class="s2"> decodeURIComponent</span><span class="s4">(</span><span class="s2">atob</span><span class="s4">(</span><span class="s2">str</span><span class="s4">));</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">return</span><span class="s2"> </span><span class="s3">JSON</span><span class="s4">.</span><span class="s2">parse</span><span class="s4">(</span><span class="s2">jsonStr</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">}</span><span class="s2"> </span><span class="s1">catch</span><span class="s2"> </span><span class="s4">(</span><span class="s2">e</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>console</span><span class="s4">.</span><span class="s2">error</span><span class="s4">(</span><span class="s5">"Decoding failed"</span><span class="s4">,</span><span class="s2"> e</span><span class="s4">);</span></p>
-<p class="p5"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s2">return</span><span class="s6"> </span><span class="s2">null</span><span class="s4">;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">}</span></p>
-<p class="p6"><span class="s2">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p5"><span class="s2">export</span><span class="s6"> </span><span class="s2">default</span><span class="s6"> </span><span class="s2">function</span><span class="s6"> </span><span class="s3">LobsterBingo</span><span class="s4">()</span><span class="s6"> </span><span class="s4">{</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// Default state</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s6"> </span><span class="s3">DEFAULT_TITLE</span><span class="s6"> </span><span class="s4">=</span><span class="s6"> </span><span class="s2">"The Lobster Pot Bingo"</span><span class="s4">;</span></p>
-<p class="p2"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s6"> </span><span class="s2">GRID_SIZE</span><span class="s6"> </span><span class="s4">=</span><span class="s6"> </span><span class="s9">25</span><span class="s4">;</span><span class="s6"> </span><span class="s8">// 5x5</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> initialGrid </span><span class="s4">=</span><span class="s2"> </span><span class="s3">Array</span><span class="s4">(</span><span class="s3">GRID_SIZE</span><span class="s4">).</span><span class="s2">fill</span><span class="s4">({</span><span class="s2"> text</span><span class="s4">:</span><span class="s2"> </span><span class="s5">""</span><span class="s4">,</span><span class="s2"> completed</span><span class="s4">:</span><span class="s2"> </span><span class="s1">false</span><span class="s2"> </span><span class="s4">});</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> </span><span class="s4">[</span><span class="s2">title</span><span class="s4">,</span><span class="s2"> setTitle</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> useState</span><span class="s4">(</span><span class="s3">DEFAULT_TITLE</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> </span><span class="s4">[</span><span class="s2">grid</span><span class="s4">,</span><span class="s2"> setGrid</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> useState</span><span class="s4">(</span><span class="s2">initialGrid</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> </span><span class="s4">[</span><span class="s2">mode</span><span class="s4">,</span><span class="s2"> setMode</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> useState</span><span class="s4">(</span><span class="s5">'edit'</span><span class="s4">);</span><span class="s2"> </span><span class="s8">// 'edit' or 'play'</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> </span><span class="s4">[</span><span class="s2">notification</span><span class="s4">,</span><span class="s2"> setNotification</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> useState</span><span class="s4">(</span><span class="s1">null</span><span class="s4">);</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">  </span></span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// Load state from URL on initial mount</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span>useEffect</span><span class="s4">(()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> params </span><span class="s4">=</span><span class="s2"> </span><span class="s1">new</span><span class="s2"> </span><span class="s3">URLSearchParams</span><span class="s4">(</span><span class="s2">window</span><span class="s4">.</span><span class="s2">location</span><span class="s4">.</span><span class="s2">search</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> boardData </span><span class="s4">=</span><span class="s2"> params</span><span class="s4">.</span><span class="s1">get</span><span class="s4">(</span><span class="s5">'board'</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">if</span><span class="s2"> </span><span class="s4">(</span><span class="s2">boardData</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s1">const</span><span class="s2"> decoded </span><span class="s4">=</span><span class="s2"> decodeState</span><span class="s4">(</span><span class="s2">boardData</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s1">if</span><span class="s2"> </span><span class="s4">(</span><span class="s2">decoded</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span>setTitle</span><span class="s4">(</span><span class="s2">decoded</span><span class="s4">.</span><span class="s2">title </span><span class="s4">||</span><span class="s2"> </span><span class="s3">DEFAULT_TITLE</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span>setGrid</span><span class="s4">(</span><span class="s2">decoded</span><span class="s4">.</span><span class="s2">grid </span><span class="s4">||</span><span class="s2"> initialGrid</span><span class="s4">);</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">        </span>setMode</span><span class="s4">(</span><span class="s5">'play'</span><span class="s4">);</span><span class="s6"> </span><span class="s2">// Default to play mode if loading a shared link</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span></p>
-<p class="p6"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">},</span><span class="s6"> </span><span class="s2">[]);</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// Update URL when state changes (optional, but good for "live" feel if they refresh)</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// We won't force a reload, but we will prepare the shareable link based on current state.</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> handleTileClick </span><span class="s4">=</span><span class="s2"> </span><span class="s4">(</span><span class="s2">index</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">if</span><span class="s2"> </span><span class="s4">(</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'play'</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s1">const</span><span class="s2"> newGrid </span><span class="s4">=</span><span class="s2"> </span><span class="s4">[...</span><span class="s2">grid</span><span class="s4">];</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>newGrid</span><span class="s4">[</span><span class="s2">index</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> </span><span class="s4">{</span><span class="s2"> </span><span class="s4">...</span><span class="s2">newGrid</span><span class="s4">[</span><span class="s2">index</span><span class="s4">],</span><span class="s2"> completed</span><span class="s4">:</span><span class="s2"> </span><span class="s4">!</span><span class="s2">newGrid</span><span class="s4">[</span><span class="s2">index</span><span class="s4">].</span><span class="s2">completed </span><span class="s4">};</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>setGrid</span><span class="s4">(</span><span class="s2">newGrid</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> handleTileChange </span><span class="s4">=</span><span class="s2"> </span><span class="s4">(</span><span class="s2">index</span><span class="s4">,</span><span class="s2"> value</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">if</span><span class="s2"> </span><span class="s4">(</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'edit'</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s1">const</span><span class="s2"> newGrid </span><span class="s4">=</span><span class="s2"> </span><span class="s4">[...</span><span class="s2">grid</span><span class="s4">];</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>newGrid</span><span class="s4">[</span><span class="s2">index</span><span class="s4">]</span><span class="s2"> </span><span class="s4">=</span><span class="s2"> </span><span class="s4">{</span><span class="s2"> </span><span class="s4">...</span><span class="s2">newGrid</span><span class="s4">[</span><span class="s2">index</span><span class="s4">],</span><span class="s2"> text</span><span class="s4">:</span><span class="s2"> value </span><span class="s4">};</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>setGrid</span><span class="s4">(</span><span class="s2">newGrid</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> generateShareLink </span><span class="s4">=</span><span class="s2"> </span><span class="s4">()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> stateToShare </span><span class="s4">=</span><span class="s2"> </span><span class="s4">{</span><span class="s2"> title</span><span class="s4">,</span><span class="s2"> grid </span><span class="s4">};</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> encoded </span><span class="s4">=</span><span class="s2"> encodeState</span><span class="s4">(</span><span class="s2">stateToShare</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> url </span><span class="s4">=</span><span class="s2"> </span><span class="s5">`</span><span class="s4">${</span><span class="s2">window</span><span class="s4">.</span><span class="s2">location</span><span class="s4">.</span><span class="s2">origin</span><span class="s4">}${</span><span class="s2">window</span><span class="s4">.</span><span class="s2">location</span><span class="s4">.</span><span class="s2">pathname</span><span class="s4">}</span><span class="s5">?board=</span><span class="s4">${</span><span class="s2">encoded</span><span class="s4">}</span><span class="s5">`</span><span class="s4">;</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">    </span></span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s2">// Copy to clipboard</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">const</span><span class="s2"> textArea </span><span class="s4">=</span><span class="s2"> document</span><span class="s4">.</span><span class="s2">createElement</span><span class="s4">(</span><span class="s5">"textarea"</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>textArea</span><span class="s4">.</span><span class="s2">value </span><span class="s4">=</span><span class="s2"> url</span><span class="s4">;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>document</span><span class="s4">.</span><span class="s2">body</span><span class="s4">.</span><span class="s2">appendChild</span><span class="s4">(</span><span class="s2">textArea</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>textArea</span><span class="s4">.</span><span class="s2">select</span><span class="s4">();</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s1">try</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span>document</span><span class="s4">.</span><span class="s2">execCommand</span><span class="s4">(</span><span class="s5">'copy'</span><span class="s4">);</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span>showNotification</span><span class="s4">(</span><span class="s2">"Link copied to clipboard!"</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span><span class="s2"> </span><span class="s1">catch</span><span class="s2"> </span><span class="s4">(</span><span class="s2">err</span><span class="s4">)</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span>showNotification</span><span class="s4">(</span><span class="s5">"Failed to copy link."</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>document</span><span class="s4">.</span><span class="s2">body</span><span class="s4">.</span><span class="s2">removeChild</span><span class="s4">(</span><span class="s2">textArea</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> showNotification </span><span class="s4">=</span><span class="s2"> </span><span class="s4">(</span><span class="s2">msg</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>setNotification</span><span class="s4">(</span><span class="s2">msg</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>setTimeout</span><span class="s4">(()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> setNotification</span><span class="s4">(</span><span class="s1">null</span><span class="s4">),</span><span class="s2"> </span><span class="s9">3000</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> resetBoard </span><span class="s4">=</span><span class="s2"> </span><span class="s4">()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s1">if</span><span class="s6"> </span><span class="s4">(</span><span class="s6">window</span><span class="s4">.</span><span class="s6">confirm</span><span class="s4">(</span><span class="s2">"Are you sure you want to clear the board?"</span><span class="s4">))</span><span class="s6"> </span><span class="s4">{</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>setGrid</span><span class="s4">(</span><span class="s2">initialGrid</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>setTitle</span><span class="s4">(</span><span class="s3">DEFAULT_TITLE</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span>setMode</span><span class="s4">(</span><span class="s5">'edit'</span><span class="s4">);</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// --- Styles ---</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">// Matches the "Lobster Pot" theme: Dark Navy, Muted Orange, Clean Serif/Sans mix.</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s1">const</span><span class="s2"> theme </span><span class="s4">=</span><span class="s2"> </span><span class="s4">{</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>bg</span><span class="s4">:</span><span class="s6"> </span><span class="s2">"bg-[#0f172a]"</span><span class="s4">,</span><span class="s6"> </span><span class="s8">// Slate 900</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>nav</span><span class="s4">:</span><span class="s6"> </span><span class="s2">"bg-[#0B1120]"</span><span class="s4">,</span><span class="s6"> </span><span class="s8">// Darker navy</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">    </span>primary</span><span class="s4">:</span><span class="s6"> </span><span class="s5">"bg-[#E05A36]"</span><span class="s4">,</span><span class="s6"> </span><span class="s2">// Terracotta Orange from image</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>primaryHover</span><span class="s4">:</span><span class="s6"> </span><span class="s2">"hover:bg-[#c94e2e]"</span><span class="s4">,</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>secondary</span><span class="s4">:</span><span class="s2"> </span><span class="s5">"bg-[#1e293b]"</span><span class="s4">,</span><span class="s2"> </span><span class="s8">// Slate 800</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>accent</span><span class="s4">:</span><span class="s6"> </span><span class="s2">"text-[#E05A36]"</span><span class="s4">,</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>textMain</span><span class="s4">:</span><span class="s2"> </span><span class="s5">"text-white"</span><span class="s4">,</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span>textMuted</span><span class="s4">:</span><span class="s6"> </span><span class="s2">"text-slate-400"</span><span class="s4">,</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">    </span>fontSerif</span><span class="s4">:</span><span class="s6"> </span><span class="s5">"font-serif"</span><span class="s4">,</span><span class="s6"> </span><span class="s2">// Using standard serif to match "The Lobster Pot" title</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span>fontSans</span><span class="s4">:</span><span class="s2"> </span><span class="s5">"font-sans"</span><span class="s4">,</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">};</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p5"><span class="s6"><span class="Apple-converted-space">  </span></span><span class="s2">return</span><span class="s6"> </span><span class="s4">(</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">    </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">={</span><span class="s2">`min-h-screen </span><span class="s4">${</span><span class="s6">theme</span><span class="s4">.</span><span class="s6">bg</span><span class="s4">}</span><span class="s2"> </span><span class="s4">${</span><span class="s6">theme</span><span class="s4">.</span><span class="s6">textMain</span><span class="s4">}</span><span class="s2"> </span><span class="s4">${</span><span class="s6">theme</span><span class="s4">.</span><span class="s6">fontSans</span><span class="s4">}</span><span class="s2"> flex flex-col relative overflow-x-hidden`</span><span class="s4">}&gt;</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">      </span></span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">/* Background decoration - Abstract Pixel/Blurry feel */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"absolute inset-0 pointer-events-none opacity-20"</span><span class="s6"><span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span>style</span><span class="s4">={{</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">             </span>backgroundImage</span><span class="s4">:</span><span class="s6"> </span><span class="s2">`radial-gradient(circle at 50% 50%, #1e293b 1px, transparent 1px)`</span><span class="s4">,</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span>backgroundSize</span><span class="s4">:</span><span class="s2"> </span><span class="s5">'20px 20px'</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">}}&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">      </span></span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">/* Navbar */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;</span><span class="s6">nav className</span><span class="s4">={</span><span class="s2">`</span><span class="s4">${</span><span class="s6">theme</span><span class="s4">.</span><span class="s6">nav</span><span class="s4">}</span><span class="s2"> p-4 shadow-lg border-b border-slate-800 z-10`</span><span class="s4">}&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"max-w-6xl mx-auto flex justify-between items-center"</span><span class="s4">&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"flex items-center gap-3"</span><span class="s4">&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"p-2 bg-[#E05A36] rounded-md"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s3">Anchor</span><span class="s2"> className</span><span class="s4">=</span><span class="s5">"text-white w-6 h-6"</span><span class="s2"> /&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s2">h1 className</span><span class="s4">={</span><span class="s5">`</span><span class="s4">${</span><span class="s2">theme</span><span class="s4">.</span><span class="s2">fontSerif</span><span class="s4">}</span><span class="s5"> text-xl md:text-2xl font-bold tracking-wide`</span><span class="s4">}&gt;</span><span class="s3">The</span><span class="s2"> </span><span class="s3">Lobster</span><span class="s2"> </span><span class="s3">Pot</span><span class="s4">&lt;/</span><span class="s2">h1</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s2">p className</span><span class="s4">={</span><span class="s5">`text-xs </span><span class="s4">${</span><span class="s2">theme</span><span class="s4">.</span><span class="s2">textMuted</span><span class="s4">}</span><span class="s5"> tracking-wider uppercase`</span><span class="s4">}&gt;</span><span class="s3">Professionally</span><span class="s2"> </span><span class="s3">Casual</span><span class="s4">&lt;/</span><span class="s2">p</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;</span><span class="s2">div className</span><span class="s4">=</span><span class="s5">"flex gap-2"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s2">button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span>onClick</span><span class="s4">={</span><span class="s2">generateShareLink</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">               </span>className</span><span class="s4">={</span><span class="s2">`hidden md:flex items-center gap-2 px-4 py-2 rounded-md border border-[#E05A36] text-[#E05A36] hover:bg-[#E05A36] hover:text-white transition-all text-sm font-semibold`</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span></span><span class="s4">&lt;</span><span class="s3">Share2</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">16</span><span class="s4">}</span><span class="s2"> /&gt; </span><span class="s3">Share</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;/</span><span class="s2">button</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;/</span><span class="s2">nav</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">/* Main Content */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;</span><span class="s6">main className</span><span class="s4">=</span><span class="s2">"flex-grow flex flex-col items-center p-4 z-10"</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">        </span></span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">{</span><span class="s2">/* Controls Header */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"w-full max-w-4xl mt-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-6 rounded-xl border border-slate-700 backdrop-blur-sm"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;</span><span class="s2">div className</span><span class="s4">=</span><span class="s5">"flex-1 w-full"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">{</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'edit'</span><span class="s2"> </span><span class="s4">?</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">&lt;</span><span class="s2">div className</span><span class="s4">=</span><span class="s5">"flex flex-col gap-1"</span><span class="s4">&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                 </span></span><span class="s4">&lt;</span><span class="s6">label className</span><span class="s4">=</span><span class="s2">"text-xs text-slate-400 uppercase tracking-widest font-bold"</span><span class="s4">&gt;</span><span class="s3">Event</span><span class="s6"> </span><span class="s3">Title</span><span class="s4">&lt;/</span><span class="s6">label</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                 </span></span><span class="s4">&lt;</span><span class="s2">input<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span></span><span class="s1">type</span><span class="s4">=</span><span class="s5">"text"</span><span class="s2"><span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>value</span><span class="s4">={</span><span class="s2">title</span><span class="s4">}</span><span class="s2"><span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>onChange</span><span class="s4">={(</span><span class="s2">e</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> setTitle</span><span class="s4">(</span><span class="s2">e</span><span class="s4">.</span><span class="s2">target</span><span class="s4">.</span><span class="s2">value</span><span class="s4">)}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                  </span>className</span><span class="s4">=</span><span class="s2">"bg-transparent border-b-2 border-slate-600 text-2xl md:text-3xl font-bold text-white focus:outline-none focus:border-[#E05A36] w-full font-serif placeholder-slate-600"</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>placeholder</span><span class="s4">=</span><span class="s5">"Enter Event Name..."</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span>/&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">)</span><span class="s2"> </span><span class="s4">:</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span></span><span class="s4">&lt;</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                  </span></span><span class="s4">&lt;</span><span class="s6">h2 className</span><span class="s4">=</span><span class="s2">"text-2xl md:text-3xl font-bold font-serif text-[#E05A36]"</span><span class="s4">&gt;{</span><span class="s6">title</span><span class="s4">}&lt;/</span><span class="s6">h2</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span></span><span class="s4">&lt;</span><span class="s2">p className</span><span class="s4">=</span><span class="s5">"text-slate-400 text-sm mt-1"</span><span class="s4">&gt;</span><span class="s3">Interactive</span><span class="s2"> </span><span class="s3">Bingo</span><span class="s2"> </span><span class="s3">Board</span><span class="s4">&lt;/</span><span class="s2">p</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">)}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"flex items-center gap-3 bg-slate-900 p-2 rounded-lg border border-slate-700"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s2">button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span>onClick</span><span class="s4">={()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> setMode</span><span class="s4">(</span><span class="s5">'edit'</span><span class="s4">)}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">               </span>className</span><span class="s4">={</span><span class="s2">`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold </span><span class="s4">${</span><span class="s6">mode </span><span class="s4">===</span><span class="s6"> </span><span class="s2">'edit'</span><span class="s6"> </span><span class="s4">?</span><span class="s6"> </span><span class="s2">`</span><span class="s4">${</span><span class="s6">theme</span><span class="s4">.</span><span class="s6">primary</span><span class="s4">}</span><span class="s2"> text-white shadow-lg`</span><span class="s6"> </span><span class="s4">:</span><span class="s6"> </span><span class="s2">'text-slate-400 hover:text-white'</span><span class="s4">}</span><span class="s2">`</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span></span><span class="s4">&lt;</span><span class="s3">Edit3</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">16</span><span class="s4">}</span><span class="s2"> /&gt; </span><span class="s3">Edit</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;/</span><span class="s2">button</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s2">button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span>onClick</span><span class="s4">={()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> setMode</span><span class="s4">(</span><span class="s5">'play'</span><span class="s4">)}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">               </span>className</span><span class="s4">={</span><span class="s2">`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold </span><span class="s4">${</span><span class="s6">mode </span><span class="s4">===</span><span class="s6"> </span><span class="s2">'play'</span><span class="s6"> </span><span class="s4">?</span><span class="s6"> </span><span class="s2">'bg-emerald-600 text-white shadow-lg'</span><span class="s6"> </span><span class="s4">:</span><span class="s6"> </span><span class="s2">'text-slate-400 hover:text-white'</span><span class="s4">}</span><span class="s2">`</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">               </span></span><span class="s4">&lt;</span><span class="s3">Trophy</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">16</span><span class="s4">}</span><span class="s2"> /&gt; </span><span class="s3">Play</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;/</span><span class="s2">button</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">{</span><span class="s2">/* The Grid */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"w-full max-w-4xl grid grid-cols-5 gap-2 md:gap-3 p-3 bg-slate-800 rounded-xl shadow-2xl border-4 border-slate-700"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">{</span><span class="s2">grid</span><span class="s4">.</span><span class="s2">map</span><span class="s4">((</span><span class="s2">tile</span><span class="s4">,</span><span class="s2"> index</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;</span><span class="s2">div<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span>key</span><span class="s4">={</span><span class="s2">index</span><span class="s4">}</span><span class="s2"><span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span>onClick</span><span class="s4">={()</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> handleTileClick</span><span class="s4">(</span><span class="s2">index</span><span class="s4">)}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span>className</span><span class="s4">={</span><span class="s5">`</span></p>
-<p class="p7"><span class="s2"><span class="Apple-converted-space">                </span>aspect-square relative flex flex-col items-center justify-center text-center p-1 md:p-2 rounded-md transition-all duration-200</span></p>
-<p class="p7"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">${</span><span class="s6">mode </span><span class="s4">===</span><span class="s6"> </span><span class="s2">'play'</span><span class="s6"> </span><span class="s4">?</span><span class="s6"> </span><span class="s2">'cursor-pointer hover:scale-[1.02] active:scale-95 select-none'</span><span class="s6"> </span><span class="s4">:</span><span class="s6"> </span><span class="s2">''</span><span class="s4">}</span></p>
-<p class="p1"><span class="s5"><span class="Apple-converted-space">                </span></span><span class="s4">${</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'play'</span><span class="s2"> </span><span class="s4">&amp;&amp;</span><span class="s2"> tile</span><span class="s4">.</span><span class="s2">completed<span class="Apple-converted-space"> </span></span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                  </span></span><span class="s4">?</span><span class="s6"> </span><span class="s2">'bg-emerald-900/80 border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]'</span><span class="s6"><span class="Apple-converted-space"> </span></span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                  </span></span><span class="s4">:</span><span class="s6"> </span><span class="s2">'bg-slate-900 border border-slate-700 hover:border-slate-500'</span><span class="s4">}</span></p>
-<p class="p7"><span class="s2"><span class="Apple-converted-space">              </span>`</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">&gt;</span></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">              </span></span><span class="s4">{</span><span class="s2">/* Center Tile Decoration (Free space usually, but here just part of grid) */</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">{</span><span class="s2">index </span><span class="s4">===</span><span class="s2"> </span><span class="s9">12</span><span class="s2"> </span><span class="s4">&amp;&amp;</span><span class="s2"> </span><span class="s4">!</span><span class="s2">tile</span><span class="s4">.</span><span class="s2">text </span><span class="s4">&amp;&amp;</span><span class="s2"> mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'edit'</span><span class="s2"> </span><span class="s4">&amp;&amp;</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                 </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"absolute opacity-20 pointer-events-none"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                    </span></span><span class="s4">&lt;</span><span class="s3">Anchor</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">40</span><span class="s4">}</span><span class="s2"> /&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                 </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">)}</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">              </span></span><span class="s4">{</span><span class="s2">/* Complete Overlay Icon */</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">{</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'play'</span><span class="s2"> </span><span class="s4">&amp;&amp;</span><span class="s2"> tile</span><span class="s4">.</span><span class="s2">completed </span><span class="s4">&amp;&amp;</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"absolute top-1 right-1 text-emerald-400 animate-in fade-in zoom-in duration-200"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span></span><span class="s4">&lt;</span><span class="s3">CheckCircle2</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">16</span><span class="s4">}</span><span class="s2"> md</span><span class="s4">:</span><span class="s2">size</span><span class="s4">={</span><span class="s9">20</span><span class="s4">}</span><span class="s2"> className</span><span class="s4">=</span><span class="s5">"fill-emerald-900/50"</span><span class="s2"> /&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">)}</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">{</span><span class="s2">mode </span><span class="s4">===</span><span class="s2"> </span><span class="s5">'edit'</span><span class="s2"> </span><span class="s4">?</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s2">textarea</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>value</span><span class="s4">={</span><span class="s2">tile</span><span class="s4">.</span><span class="s2">text</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>onChange</span><span class="s4">={(</span><span class="s2">e</span><span class="s4">)</span><span class="s2"> </span><span class="s4">=&gt;</span><span class="s2"> handleTileChange</span><span class="s4">(</span><span class="s2">index</span><span class="s4">,</span><span class="s2"> e</span><span class="s4">.</span><span class="s2">target</span><span class="s4">.</span><span class="s2">value</span><span class="s4">)}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>placeholder</span><span class="s4">={</span><span class="s2">index </span><span class="s4">===</span><span class="s2"> </span><span class="s9">12</span><span class="s2"> </span><span class="s4">?</span><span class="s2"> </span><span class="s5">"Free Space?"</span><span class="s2"> </span><span class="s4">:</span><span class="s2"> </span><span class="s5">"Task..."</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                  </span>className</span><span class="s4">=</span><span class="s2">"w-full h-full bg-transparent text-center text-xs md:text-sm text-white resize-none focus:outline-none placeholder-slate-600"</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span>style</span><span class="s4">={{</span><span class="s2"> overflow</span><span class="s4">:</span><span class="s2"> </span><span class="s5">'hidden'</span><span class="s2"> </span><span class="s4">}}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span>/&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">)</span><span class="s2"> </span><span class="s4">:</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;</span><span class="s6">span className</span><span class="s4">={</span><span class="s2">`text-xs md:text-sm font-medium break-words w-full px-1 </span><span class="s4">${</span><span class="s6">tile</span><span class="s4">.</span><span class="s6">completed </span><span class="s4">?</span><span class="s6"> </span><span class="s2">'text-emerald-100 line-through decoration-emerald-500/50 decoration-2'</span><span class="s6"> </span><span class="s4">:</span><span class="s6"> </span><span class="s2">'text-slate-200'</span><span class="s4">}</span><span class="s2">`</span><span class="s4">}&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                  </span></span><span class="s4">{</span><span class="s2">tile</span><span class="s4">.</span><span class="s2">text </span><span class="s4">||</span><span class="s2"> </span><span class="s4">&lt;</span><span class="s2">span className</span><span class="s4">=</span><span class="s5">"text-slate-700 italic text-[10px]"</span><span class="s4">&gt;</span><span class="s3">Empty</span><span class="s2"> </span><span class="s3">Tile</span><span class="s4">&lt;/</span><span class="s2">span</span><span class="s4">&gt;}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">                </span></span><span class="s4">&lt;/</span><span class="s2">span</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">              </span></span><span class="s4">)}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">            </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">          </span></span><span class="s4">))}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">{</span><span class="s2">/* Footer Controls */</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s2">div className</span><span class="s4">=</span><span class="s5">"mt-8 flex gap-4"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;</span><span class="s2">button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span>onClick</span><span class="s4">={</span><span class="s2">resetBoard</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">             </span>className</span><span class="s4">=</span><span class="s2">"text-slate-500 hover:text-red-400 flex items-center gap-2 text-sm font-medium transition-colors"</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s3">RotateCcw</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">16</span><span class="s4">}</span><span class="s2"> /&gt; </span><span class="s3">Reset</span><span class="s2"> </span><span class="s3">Board</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;/</span><span class="s2">button</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s2"><span class="Apple-converted-space">           </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;</span><span class="s2">button<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span>onClick</span><span class="s4">={</span><span class="s2">generateShareLink</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">             </span>className</span><span class="s4">=</span><span class="s2">"md:hidden flex items-center gap-2 px-6 py-3 rounded-full bg-[#E05A36] text-white shadow-lg font-bold"</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">             </span></span><span class="s4">&lt;</span><span class="s3">Share2</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">18</span><span class="s4">}</span><span class="s2"> /&gt; </span><span class="s3">Share</span><span class="s2"> </span><span class="s3">Board</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;/</span><span class="s2">button</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;/</span><span class="s2">main</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">/* OSRS / Clan Footer */</span><span class="s4">}</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;</span><span class="s6">footer className</span><span class="s4">=</span><span class="s2">"w-full p-6 text-center text-slate-500 text-xs border-t border-slate-800 bg-[#0B1120]"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s2">p className</span><span class="s4">=</span><span class="s5">"mb-2"</span><span class="s4">&gt;</span><span class="s3">The</span><span class="s2"> </span><span class="s3">Lobster</span><span class="s2"> </span><span class="s3">Pot</span><span class="s2"> </span><span class="s3">Clan</span><span class="s2"> </span><span class="s4">&amp;</span><span class="s2">copy</span><span class="s4">;</span><span class="s2"> </span><span class="s4">{</span><span class="s1">new</span><span class="s2"> </span><span class="s3">Date</span><span class="s4">().</span><span class="s2">getFullYear</span><span class="s4">()}&lt;/</span><span class="s2">p</span><span class="s4">&gt;</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s6">p className</span><span class="s4">=</span><span class="s2">"italic opacity-50"</span><span class="s4">&gt;</span><span class="s2">"Professionally Casual."</span><span class="s4">&lt;/</span><span class="s6">p</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">&lt;/</span><span class="s2">footer</span><span class="s4">&gt;</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p4"><span class="s6"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">/* Notification Toast */</span><span class="s4">}</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">{</span><span class="s2">notification </span><span class="s4">&amp;&amp;</span><span class="s2"> </span><span class="s4">(</span></p>
-<p class="p7"><span class="s6"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;</span><span class="s6">div className</span><span class="s4">=</span><span class="s2">"fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#E05A36] text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 fade-in duration-300 z-50"</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;</span><span class="s3">CheckCircle2</span><span class="s2"> size</span><span class="s4">={</span><span class="s9">18</span><span class="s4">}</span><span class="s2"> /&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">           </span></span><span class="s4">&lt;</span><span class="s2">span className</span><span class="s4">=</span><span class="s5">"font-semibold text-sm"</span><span class="s4">&gt;{</span><span class="s2">notification</span><span class="s4">}&lt;/</span><span class="s2">span</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">        </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">      </span></span><span class="s4">)}</span></p>
-<p class="p3"><span class="s7"></span><br></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">    </span></span><span class="s4">&lt;/</span><span class="s2">div</span><span class="s4">&gt;</span></p>
-<p class="p1"><span class="s2"><span class="Apple-converted-space">  </span></span><span class="s4">);</span></p>
-<p class="p6"><span class="s2">}</span></p>
-</body>
-</html>
+import React, { useState, useEffect, useRef } from 'react';
+import { Share2, Edit3, CheckCircle2, RotateCcw, Lock, Unlock, Copy, ExternalLink, Trophy, Anchor } from 'lucide-react';
+
+// --- Utility Functions for URL State Management ---
+
+// Simple compression to keep URLs shorter
+const encodeState = (data) => {
+  try {
+    const jsonStr = JSON.stringify(data);
+    return btoa(encodeURIComponent(jsonStr)); // Base64 encode safe for URLs
+  } catch (e) {
+    console.error("Encoding failed", e);
+    return "";
+  }
+};
+
+const decodeState = (str) => {
+  try {
+    const jsonStr = decodeURIComponent(atob(str));
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    console.error("Decoding failed", e);
+    return null;
+  }
+};
+
+export default function LobsterBingo() {
+  // Default state
+  const DEFAULT_TITLE = "The Lobster Pot Bingo";
+  const GRID_SIZE = 25; // 5x5
+  const initialGrid = Array(GRID_SIZE).fill({ text: "", completed: false });
+
+  const [title, setTitle] = useState(DEFAULT_TITLE);
+  const [grid, setGrid] = useState(initialGrid);
+  const [mode, setMode] = useState('edit'); // 'edit' or 'play'
+  const [notification, setNotification] = useState(null);
+  
+  // Load state from URL on initial mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const boardData = params.get('board');
+    if (boardData) {
+      const decoded = decodeState(boardData);
+      if (decoded) {
+        setTitle(decoded.title || DEFAULT_TITLE);
+        setGrid(decoded.grid || initialGrid);
+        setMode('play'); // Default to play mode if loading a shared link
+      }
+    }
+  }, []);
+
+  // Update URL when state changes (optional, but good for "live" feel if they refresh)
+  // We won't force a reload, but we will prepare the shareable link based on current state.
+
+  const handleTileClick = (index) => {
+    if (mode === 'play') {
+      const newGrid = [...grid];
+      newGrid[index] = { ...newGrid[index], completed: !newGrid[index].completed };
+      setGrid(newGrid);
+    }
+  };
+
+  const handleTileChange = (index, value) => {
+    if (mode === 'edit') {
+      const newGrid = [...grid];
+      newGrid[index] = { ...newGrid[index], text: value };
+      setGrid(newGrid);
+    }
+  };
+
+  const generateShareLink = () => {
+    const stateToShare = { title, grid };
+    const encoded = encodeState(stateToShare);
+    const url = `${window.location.origin}${window.location.pathname}?board=${encoded}`;
+    
+    // Copy to clipboard
+    const textArea = document.createElement("textarea");
+    textArea.value = url;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showNotification("Link copied to clipboard!");
+    } catch (err) {
+        showNotification("Failed to copy link.");
+    }
+    document.body.removeChild(textArea);
+  };
+
+  const showNotification = (msg) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const resetBoard = () => {
+    if (window.confirm("Are you sure you want to clear the board?")) {
+      setGrid(initialGrid);
+      setTitle(DEFAULT_TITLE);
+      setMode('edit');
+    }
+  };
+
+  // --- Styles ---
+  // Matches the "Lobster Pot" theme: Dark Navy, Muted Orange, Clean Serif/Sans mix.
+  const theme = {
+    bg: "bg-[#0f172a]", // Slate 900
+    nav: "bg-[#0B1120]", // Darker navy
+    primary: "bg-[#E05A36]", // Terracotta Orange from image
+    primaryHover: "hover:bg-[#c94e2e]",
+    secondary: "bg-[#1e293b]", // Slate 800
+    accent: "text-[#E05A36]",
+    textMain: "text-white",
+    textMuted: "text-slate-400",
+    fontSerif: "font-serif", // Using standard serif to match "The Lobster Pot" title
+    fontSans: "font-sans",
+  };
+
+  return (
+    <div className={`min-h-screen ${theme.bg} ${theme.textMain} ${theme.fontSans} flex flex-col relative overflow-x-hidden`}>
+      
+      {/* Background decoration - Abstract Pixel/Blurry feel */}
+      <div className="absolute inset-0 pointer-events-none opacity-20" 
+           style={{
+             backgroundImage: `radial-gradient(circle at 50% 50%, #1e293b 1px, transparent 1px)`,
+             backgroundSize: '20px 20px'
+           }}>
+      </div>
+      
+      {/* Navbar */}
+      <nav className={`${theme.nav} p-4 shadow-lg border-b border-slate-800 z-10`}>
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-3">
+             <div className="p-2 bg-[#E05A36] rounded-md">
+                <Anchor className="text-white w-6 h-6" />
+             </div>
+             <div>
+                <h1 className={`${theme.fontSerif} text-xl md:text-2xl font-bold tracking-wide`}>The Lobster Pot</h1>
+                <p className={`text-xs ${theme.textMuted} tracking-wider uppercase`}>Professionally Casual</p>
+             </div>
+          </div>
+          <div className="flex gap-2">
+             <button 
+               onClick={generateShareLink}
+               className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-md border border-[#E05A36] text-[#E05A36] hover:bg-[#E05A36] hover:text-white transition-all text-sm font-semibold`}
+             >
+               <Share2 size={16} /> Share
+             </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className="flex-grow flex flex-col items-center p-4 z-10">
+        
+        {/* Controls Header */}
+        <div className="w-full max-w-4xl mt-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-6 rounded-xl border border-slate-700 backdrop-blur-sm">
+          <div className="flex-1 w-full">
+            {mode === 'edit' ? (
+              <div className="flex flex-col gap-1">
+                 <label className="text-xs text-slate-400 uppercase tracking-widest font-bold">Event Title</label>
+                 <input 
+                  type="text" 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="bg-transparent border-b-2 border-slate-600 text-2xl md:text-3xl font-bold text-white focus:outline-none focus:border-[#E05A36] w-full font-serif placeholder-slate-600"
+                  placeholder="Enter Event Name..."
+                />
+              </div>
+            ) : (
+               <div>
+                  <h2 className="text-2xl md:text-3xl font-bold font-serif text-[#E05A36]">{title}</h2>
+                  <p className="text-slate-400 text-sm mt-1">Interactive Bingo Board</p>
+               </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 bg-slate-900 p-2 rounded-lg border border-slate-700">
+             <button 
+               onClick={() => setMode('edit')}
+               className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'edit' ? `${theme.primary} text-white shadow-lg` : 'text-slate-400 hover:text-white'}`}
+             >
+               <Edit3 size={16} /> Edit
+             </button>
+             <button 
+               onClick={() => setMode('play')}
+               className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-semibold ${mode === 'play' ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+             >
+               <Trophy size={16} /> Play
+             </button>
+          </div>
+        </div>
+
+        {/* The Grid */}
+        <div className="w-full max-w-4xl grid grid-cols-5 gap-2 md:gap-3 p-3 bg-slate-800 rounded-xl shadow-2xl border-4 border-slate-700">
+          {grid.map((tile, index) => (
+            <div 
+              key={index} 
+              onClick={() => handleTileClick(index)}
+              className={`
+                aspect-square relative flex flex-col items-center justify-center text-center p-1 md:p-2 rounded-md transition-all duration-200
+                ${mode === 'play' ? 'cursor-pointer hover:scale-[1.02] active:scale-95 select-none' : ''}
+                ${mode === 'play' && tile.completed 
+                  ? 'bg-emerald-900/80 border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                  : 'bg-slate-900 border border-slate-700 hover:border-slate-500'}
+              `}
+            >
+              {/* Center Tile Decoration (Free space usually, but here just part of grid) */}
+              {index === 12 && !tile.text && mode === 'edit' && (
+                 <div className="absolute opacity-20 pointer-events-none">
+                    <Anchor size={40} />
+                 </div>
+              )}
+
+              {/* Complete Overlay Icon */}
+              {mode === 'play' && tile.completed && (
+                <div className="absolute top-1 right-1 text-emerald-400 animate-in fade-in zoom-in duration-200">
+                  <CheckCircle2 size={16} md:size={20} className="fill-emerald-900/50" />
+                </div>
+              )}
+
+              {mode === 'edit' ? (
+                <textarea
+                  value={tile.text}
+                  onChange={(e) => handleTileChange(index, e.target.value)}
+                  placeholder={index === 12 ? "Free Space?" : "Task..."}
+                  className="w-full h-full bg-transparent text-center text-xs md:text-sm text-white resize-none focus:outline-none placeholder-slate-600"
+                  style={{ overflow: 'hidden' }}
+                />
+              ) : (
+                <span className={`text-xs md:text-sm font-medium break-words w-full px-1 ${tile.completed ? 'text-emerald-100 line-through decoration-emerald-500/50 decoration-2' : 'text-slate-200'}`}>
+                  {tile.text || <span className="text-slate-700 italic text-[10px]">Empty Tile</span>}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Controls */}
+        <div className="mt-8 flex gap-4">
+           <button 
+             onClick={resetBoard}
+             className="text-slate-500 hover:text-red-400 flex items-center gap-2 text-sm font-medium transition-colors"
+           >
+             <RotateCcw size={16} /> Reset Board
+           </button>
+           
+           <button 
+             onClick={generateShareLink}
+             className="md:hidden flex items-center gap-2 px-6 py-3 rounded-full bg-[#E05A36] text-white shadow-lg font-bold"
+           >
+             <Share2 size={18} /> Share Board
+           </button>
+        </div>
+
+      </main>
+
+      {/* OSRS / Clan Footer */}
+      <footer className="w-full p-6 text-center text-slate-500 text-xs border-t border-slate-800 bg-[#0B1120]">
+        <p className="mb-2">The Lobster Pot Clan &copy; {new Date().getFullYear()}</p>
+        <p className="italic opacity-50">"Professionally Casual."</p>
+      </footer>
+
+      {/* Notification Toast */}
+      {notification && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#E05A36] text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-2 animate-in slide-in-from-bottom-5 fade-in duration-300 z-50">
+           <CheckCircle2 size={18} />
+           <span className="font-semibold text-sm">{notification}</span>
+        </div>
+      )}
+
+    </div>
+  );
+}
